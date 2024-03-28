@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "./";
+
+service ProductService {
+    rpc CreateProduct(Product) returns (ProductResponse);
+    rpc FindProductByID(PrID) returns(Product);
+    rpc FindProductByCategory(PrID) returns(ProductList);
+    rpc FindAllProducts(ProductNoParam) returns (ProductList);
+    rpc EditProduct(Product) returns (Product);
+    rpc RemoveProduct(PrIDs) returns(ProductResponse);
+
+    rpc CreateCategory(Category) returns (ProductResponse);
+    rpc FindCategoryByID(PrID) returns(Category);
+    rpc FindAllCategories(ProductNoParam) returns (CategoryList);
+    rpc EditCategory(Category) returns (Category);
+    rpc RemoveCategory(PrID) returns(ProductResponse);
+}
+
+message CategoryList {
+    repeated Category Categories = 1;
+}
+
+message Category {
+    uint32 Category_ID = 1;
+    string Name = 2;
+    string Description = 3;
+}
+
+
+message ProductNoParam{}
+
+message ProductList {
+    repeated Product Products = 1;
+}
+
+message PrID {
+    uint32 ID = 1; 
+}
+
+message PrIDs {
+    uint32 ID = 1;
+    uint32 Seller_ID = 2; 
+}
+
+message Product {
+    string Name = 1;
+    uint32 Seller_ID = 2;
+    Category Category = 3;
+    uint32 Base_Price = 4;
+    string Description = 5;
+    bool   Bidding_Type = 6;
+    string Bidding_Start_Time = 7;
+    string Bidding_End_Time = 8;
+    string Listed_On = 9;
+    uint32 Product_ID = 10;
+    string Status = 11;
+    
+}
+
+message ProductResponse {
+    enum Status {
+        OK = 0;
+        ERROR = 1;
+    }
+
+    Status status = 1;
+    string message = 2;
+    oneof payload {
+        string error = 3;
+        string data = 4;
+    }
+}

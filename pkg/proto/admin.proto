@@ -6,6 +6,7 @@ option go_package = "./";
 
 service AdminService {
     rpc AdminLoginRequest(AdminLogin) returns(AdminResponse);
+    rpc AddToAdminWallet(Amount) returns(AdminResponse);
 
     rpc AddCategory(AdminCategory) returns(AdminResponse);
     rpc FindCategory(AdID) returns(AdminCategory);
@@ -18,6 +19,10 @@ service AdminService {
     rpc RemoveProduct(AdID) returns(AdminResponse);
 
     rpc AdminBlockUser(AdID) returns(AdminResponse);
+}
+
+message Amount {
+    float amount = 1;
 }
 
 message AdminProductList {

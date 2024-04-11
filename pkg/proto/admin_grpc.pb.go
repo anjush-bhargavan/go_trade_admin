@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	AdminService_AdminLoginRequest_FullMethodName   = "/pb.AdminService/AdminLoginRequest"
+	AdminService_AddToAdminWallet_FullMethodName    = "/pb.AdminService/AddToAdminWallet"
 	AdminService_AddCategory_FullMethodName         = "/pb.AdminService/AddCategory"
 	AdminService_FindCategory_FullMethodName        = "/pb.AdminService/FindCategory"
 	AdminService_FindCategories_FullMethodName      = "/pb.AdminService/FindCategories"
@@ -36,6 +37,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AdminServiceClient interface {
 	AdminLoginRequest(ctx context.Context, in *AdminLogin, opts ...grpc.CallOption) (*AdminResponse, error)
+	AddToAdminWallet(ctx context.Context, in *Amount, opts ...grpc.CallOption) (*AdminResponse, error)
 	AddCategory(ctx context.Context, in *AdminCategory, opts ...grpc.CallOption) (*AdminResponse, error)
 	FindCategory(ctx context.Context, in *AdID, opts ...grpc.CallOption) (*AdminCategory, error)
 	FindCategories(ctx context.Context, in *AdminNoParam, opts ...grpc.CallOption) (*AdminCategoryList, error)
@@ -58,6 +60,15 @@ func NewAdminServiceClient(cc grpc.ClientConnInterface) AdminServiceClient {
 func (c *adminServiceClient) AdminLoginRequest(ctx context.Context, in *AdminLogin, opts ...grpc.CallOption) (*AdminResponse, error) {
 	out := new(AdminResponse)
 	err := c.cc.Invoke(ctx, AdminService_AdminLoginRequest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminServiceClient) AddToAdminWallet(ctx context.Context, in *Amount, opts ...grpc.CallOption) (*AdminResponse, error) {
+	out := new(AdminResponse)
+	err := c.cc.Invoke(ctx, AdminService_AddToAdminWallet_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -150,6 +161,7 @@ func (c *adminServiceClient) AdminBlockUser(ctx context.Context, in *AdID, opts 
 // for forward compatibility
 type AdminServiceServer interface {
 	AdminLoginRequest(context.Context, *AdminLogin) (*AdminResponse, error)
+	AddToAdminWallet(context.Context, *Amount) (*AdminResponse, error)
 	AddCategory(context.Context, *AdminCategory) (*AdminResponse, error)
 	FindCategory(context.Context, *AdID) (*AdminCategory, error)
 	FindCategories(context.Context, *AdminNoParam) (*AdminCategoryList, error)
@@ -168,6 +180,9 @@ type UnimplementedAdminServiceServer struct {
 
 func (UnimplementedAdminServiceServer) AdminLoginRequest(context.Context, *AdminLogin) (*AdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminLoginRequest not implemented")
+}
+func (UnimplementedAdminServiceServer) AddToAdminWallet(context.Context, *Amount) (*AdminResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddToAdminWallet not implemented")
 }
 func (UnimplementedAdminServiceServer) AddCategory(context.Context, *AdminCategory) (*AdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddCategory not implemented")
@@ -223,6 +238,24 @@ func _AdminService_AdminLoginRequest_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdminServiceServer).AdminLoginRequest(ctx, req.(*AdminLogin))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminService_AddToAdminWallet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Amount)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).AddToAdminWallet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminService_AddToAdminWallet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).AddToAdminWallet(ctx, req.(*Amount))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -399,6 +432,10 @@ var AdminService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AdminLoginRequest",
 			Handler:    _AdminService_AdminLoginRequest_Handler,
+		},
+		{
+			MethodName: "AddToAdminWallet",
+			Handler:    _AdminService_AddToAdminWallet_Handler,
 		},
 		{
 			MethodName: "AddCategory",

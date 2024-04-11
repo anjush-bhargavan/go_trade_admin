@@ -12,13 +12,16 @@ func (a *AdminRepository) FindAdminByEmail(email string) (*model.Admin, error) {
 	return &admin, nil
 }
 
-// UpdateWallet method will update the wallet of admin 
-func (a *AdminRepository) UpdateWallet(amount float64) error {
+// UpdateWallet method will update the wallet of admin
+func (a *AdminRepository) UpdateWallet(amount float64) (float64, error) {
 	var admin model.Admin
 
 	if err := a.DB.Model(&model.Admin{}).Where("id = ?", 1).First(&admin).Error; err != nil {
-		return err
+		return 0, err
 	}
 	admin.Wallet += amount
-	return nil
+	if err := a.DB.Save(&admin).Error; err != nil {
+		return 0, err
+	}
+	return admin.Wallet, nil
 }

@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/anjush-bhargavan/go_trade_admin/config"
 	pb "github.com/anjush-bhargavan/go_trade_admin/pkg/proto"
@@ -10,7 +9,6 @@ import (
 )
 
 func (a *AdminService) LoginService(p *pb.AdminLogin) (*pb.AdminResponse, error) {
-	fmt.Println("hiii")
 	admin, err := a.Repo.FindAdminByEmail(p.Email)
 	if err != nil {
 		return nil, err

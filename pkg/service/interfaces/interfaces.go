@@ -6,6 +6,7 @@ import (
 
 type AdminServiceInter interface {
 	LoginService(p *pb.AdminLogin) (*pb.AdminResponse,error)
+	UpdateWalletService(p *pb.Amount) (*pb.AdminResponse, error)
 
 	AddCategoryService(p *pb.AdminCategory) (*pb.AdminResponse, error)
 	EditCategoryService(p *pb.AdminCategory) (*pb.AdminCategory, error)
